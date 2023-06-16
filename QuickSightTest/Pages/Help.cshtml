@@ -1,0 +1,182 @@
+﻿@page
+@model HelpModel
+@{
+    ViewData["Title"] = "Help";
+}
+
+<div id="embeddingContainer" style="width: 1000px; height: 600px; background-color: aliceblue"></div>
+
+@section Scripts
+{
+	<script src="https://unpkg.com/amazon-quicksight-embedding-sdk@2.2.1/dist/quicksight-embedding-js-sdk.min.js"></script>
+	<script>
+
+		const embedDashboard = async () => {
+
+			const { createEmbeddingContext } = QuickSightEmbedding;
+
+			const embeddingContext = await createEmbeddingContext({
+				onChange: (changeEvent, metadata) => {
+					console.log('Context received a change', changeEvent, metadata);
+				}
+			});
+
+			var options = {
+				url: "@Html.Raw(Model.EmbedUrl)",
+				container: document.getElementById("embeddingContainer"),
+				//parameters: {
+				//	country: "United States"
+				//},
+				scrolling: "no",
+				height: "600px",
+				width: "1000px",
+				locale: "en-US",
+				footerPaddingEnabled: true,
+				//defaultEmbeddingVisualType: "TABLE"
+			};
+
+			const embeddedDashboardExperience = await embeddingContext.embedDashboard(options);
+
+			console.log(embeddedDashboardExperience);
+		};
+
+	</script>
+	@*    <script type="text/javascript">
+	    const embedDashboard = async () => {
+		    const {
+			    createEmbeddingContext,
+		    } = QuickSightEmbedding;
+
+		    const embeddingContext = await createEmbeddingContext({
+			    onChange: (changeEvent, metadata) => {
+				    console.log('Context received a change', changeEvent, metadata);
+			    }
+		    });
+
+		    const frameOptions = {
+			    url: '@Model.EmbedUrl',
+			    container: '#embeddingContainer',
+			    height: "700px",
+			    width: "300px",
+			    resizeHeightOnSizeChangedEvent: true,
+			    onChange: (changeEvent, metadata) => {
+				    switch (changeEvent.eventName) {
+				    case 'FRAME_MOUNTED': {
+					    console.log("Do something when the experience frame is mounted.");
+					    break;
+				    }
+				    case 'FRAME_LOADED': {
+					    console.log("Do something when the experience frame is loaded.");
+					    break;
+				    }
+				    }
+			    },
+		    };
+
+		    const contentOptions = {
+			    parameters: [
+				    {
+					    Name: 'country',
+					    Values: [
+						    'United States'
+					    ],
+				    },
+				    {
+					    Name: 'states',
+					    Values: [
+						    'California',
+						    'Washington'
+					    ]
+				    }
+			    ],
+			    locale: "en-US",
+			    sheetOptions: {
+				    initialSheetId: 'e35aa24c-7382-499f-bbb9-3e3f750cdc98',
+				    singleSheet: false,
+				    emitSizeChangedEventOnSheetChange: false,
+			    },
+			    toolbarOptions: {
+				    export: false,
+				    undoRedo: false,
+				    reset: false
+			    },
+			    attributionOptions: {
+				    overlayContent: false,
+			    },
+			    onMessage: async (messageEvent, experienceMetadata) => {
+				    switch (messageEvent.eventName) {
+				    case 'CONTENT_LOADED': {
+					    console.log("All visuals are loaded. The title of the document:", messageEvent.message.title);
+					    break;
+				    }
+				    case 'ERROR_OCCURRED': {
+					    console.log("Error occurred while rendering the experience. Error code:", messageEvent.message.errorCode);
+					    break;
+				    }
+				    case 'PARAMETERS_CHANGED': {
+					    console.log("Parameters changed. Changed parameters:", messageEvent.message.changedParameters);
+					    break;
+				    }
+				    case 'SELECTED_SHEET_CHANGED': {
+					    console.log("Selected sheet changed. Selected sheet:", messageEvent.message.selectedSheet);
+					    break;
+				    }
+				    case 'SIZE_CHANGED': {
+					    console.log("Size changed. New dimensions:", messageEvent.message);
+					    break;
+				    }
+				    case 'MODAL_OPENED': {
+					    window.scrollTo({
+						    top: 0 // iframe top position
+					    });
+					    break;
+				    }
+				    }
+			    },
+		    };
+		    const embeddedDashboardExperience = await embeddingContext.embedDashboard(frameOptions, contentOptions);
+
+		    const selectCountryElement = document.getElementById('country');
+		    selectCountryElement.addEventListener('change', (event) => {
+			    embeddedDashboardExperience.setParameters([
+				    {
+					    Name: 'country',
+					    Values: event.target.value
+				    }
+			    ]);
+		    });
+	    };
+
+	    document.addEventListener("DOMContentLoaded", (event) => {
+		    embedDashboard();
+	    });
+
+    </script>*@
+	@*	<script>
+
+		function embedDashboard() {
+			var containerDiv = document.getElementById("embeddingContainer");
+			var inputURL = "@Model.EmbedUrl";
+                
+			var options = {
+                    
+				url: inputURL, // replace this url with the one generated via embedding API
+				container: containerDiv,
+				parameters: {
+					country: "United States"
+				},
+				scrolling: "no",
+				height: "600px",
+				width: "1000px",
+				locale: "en-US",
+				footerPaddingEnabled: true,
+				defaultEmbeddingVisualType: "TABLE"
+			};
+			session = QuickSightEmbedding.embedDashboard(options);
+			session.on("error", onError);
+		}
+
+		embedDashboard();
+
+	</script>*@
+}
